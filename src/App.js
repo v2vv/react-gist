@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './style.css';
 import { Octokit } from '@octokit/rest';
 import { marked } from 'marked';
+import ReactMarkdown from 'react-markdown'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 export default function App() {
   useEffect(() => {
 
   });
 
-  const [vaule, ChangeVaule] = useState("jj");
+  const [vaule, ChangeVaule] = useState("<p>jj</p");
 
   function handleClick() {
 
@@ -28,8 +31,8 @@ export default function App() {
         })
 
       })
-      const html = marked.parse(JSON.stringify(filenames, null, "\r\n"));
-      ChangeVaule(html);
+      // const html = marked.parse());
+      ChangeVaule("```json\n"+JSON.stringify(filenames, null, "\n")+"\n```");
     });
   }
 
@@ -40,7 +43,27 @@ export default function App() {
         You pressed me times
       </button>
       <p>Start editing to see some magic happen :)</p>
-      <div dangerouslySetInnerHTML={{ __html: vaule }} />
+      <ReactMarkdown
+        children={vaule}
+        components={{
+          code({ node, inline, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || '')
+            return !inline && match ? (
+              <SyntaxHighlighter
+                children={String(children).replace(/\n$/, '')}
+                style={dark}
+                language={match[1]}
+                PreTag="div"
+                {...props}
+              />
+            ) : (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            )
+          }
+        }}
+      />
     </div>
 
   );
