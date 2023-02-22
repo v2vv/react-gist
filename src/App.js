@@ -6,7 +6,7 @@ export default function App() {
   useEffect(() => {
     console.log('kk');
     const octokit = new Octokit({
-      auth: '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',
+      auth: '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',
     });
     octokit.gists.list().then(({ data }) => {
       console.log(data);
