@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.css';
 import { Octokit } from '@octokit/rest';
 
@@ -12,7 +12,7 @@ export default function App() {
       console.log(data);
     });
   });
-
+  const { vaule, ChangeVaule } = useState();
   return (
     <div>
       <h1>Hello StackBlitz!</h1>
