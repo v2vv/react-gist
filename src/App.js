@@ -1,23 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import './style.css';
-import { Octokit } from '@octokit/rest';
-import { marked } from 'marked';
-import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { Octokit } from "@octokit/rest";
+import React, { useEffect, useState } from "react";
+import "./style.css";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
+import { marked } from "marked";
 
 export default function App() {
   useEffect(() => {
-
-  });
+    // 配置 highlight.js
+    hljs.configure({
+      // 忽略未经转义的 HTML 字符
+      ignoreUnescapedHTML: true,
+    });
+    // 获取到内容中所有的code标签
+    const codes = document.querySelectorAll("pre code");
+    codes.forEach((el) => {
+      // 让code进行高亮
+      hljs.highlightElement(el);
+    });
+  }, []);
 
   const [vaule, ChangeVaule] = useState("<p>jj</p");
 
   function handleClick() {
-
-    console.log('kk');
+    console.log("kk");
     const octokit = new Octokit({
-      auth: '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',
+      auth: "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",
     });
 
     const filenames = [];
@@ -25,46 +33,41 @@ export default function App() {
     octokit.gists.list().then(({ data }) => {
       // console.log(data);a
       data.forEach((dat) => {
-        const files = dat.files
+        const files = dat.files;
         Object.keys(files).forEach((filename) => {
           filenames.push(filename);
-        })
+        });
+      });
 
-      })
-      // const html = marked.parse());
-      ChangeVaule("```json\n"+JSON.stringify(filenames, null, "\n")+"\n```");
+      marked.setOptions({
+        highlight: function (code, lang) {
+          const language = hljs.getLanguage(lang) ? lang : "json";
+          return hljs.highlight(code, { language }).value;
+        },
+      });
+
+      const html = marked.parse(
+        " # gg \n```json\n" + JSON.stringify(filenames, null, "\n") + "\n```"
+      );
+
+      // const html = marked.parse(
+      //   " # gg \n```json\n" + JSON.stringify(filenames, null, "\n") + "\n```"
+      // );
+
+      // const Hhtml = hljs.highlightAuto(
+      //   JSON.stringify(filenames, null, "\n")
+      // ).value;
+      console.log(html);
+      ChangeVaule(html);
     });
   }
 
   return (
     <div>
       <h1>Hello StackBlitz! </h1>
-      <button onClick={handleClick}>
-        You pressed me times
-      </button>
+      <button onClick={handleClick}>You pressed me times</button>
       <p>Start editing to see some magic happen :)</p>
-      <ReactMarkdown
-        children={vaule}
-        components={{
-          code({ node, inline, className, children, ...props }) {
-            const match = /language-(\w+)/.exec(className || '')
-            return !inline && match ? (
-              <SyntaxHighlighter
-                children={String(children).replace(/\n$/, '')}
-                style={dark}
-                language={match[1]}
-                PreTag="div"
-                {...props}
-              />
-            ) : (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            )
-          }
-        }}
-      />
+      <div dangerouslySetInnerHTML={{ __html: vaule }}></div>
     </div>
-
   );
 }
