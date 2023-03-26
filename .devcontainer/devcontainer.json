@@ -8,7 +8,7 @@
 		"vscode": {
 			"extensions": [
 				"genieai.chatgpt-vscode",
-				"vsls-contrib.gistfs",
+				"vsls-contrib.gistfs"
 			],
 			"settings": {}
 		}
