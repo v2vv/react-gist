@@ -5,6 +5,9 @@ import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
 import { marked } from "marked";
 
+
+const token_git = process.env.TOKEN_GITHUB;
+
 export default function App() {
   useEffect(() => {
     // 配置 highlight.js
@@ -25,7 +28,7 @@ export default function App() {
   function handleClick() {
     console.log("kk");
     const octokit = new Octokit({
-      auth: "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",
+      auth: token_git,
     });
 
     const filenames = [];
