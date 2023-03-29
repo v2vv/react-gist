@@ -2,11 +2,13 @@ import { Octokit } from "@octokit/rest";
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import hljs from "highlight.js";
-import "highlight.js/styles/github.css";
+import "highlight.js/styles/monokai-sublime.css";
 import { marked } from "marked";
 
-
 const token_git = process.env.TOKEN_GITHUB;
+const sting1 = `
+echo hello
+`;
 
 export default function App() {
   useEffect(() => {
@@ -25,44 +27,58 @@ export default function App() {
 
   const [vaule, ChangeVaule] = useState("<p>jj</p");
 
-  function handleClick() {
+ async function handleClick() {
     console.log("kk");
     const octokit = new Octokit({
       auth: token_git,
     });
 
     const filenames = [];
-
-    octokit.gists.list().then(({ data }) => {
-      // console.log(data);a
-      data.forEach((dat) => {
-        const files = dat.files;
-        Object.keys(files).forEach((filename) => {
-          filenames.push(filename);
-        });
-      });
-
-      marked.setOptions({
-        highlight: function (code, lang) {
-          const language = hljs.getLanguage(lang) ? lang : "json";
-          return hljs.highlight(code, { language }).value;
-        },
-      });
-
-      const html = marked.parse(
-        " # gg \n```json\n" + JSON.stringify(filenames, null, "\n") + "\n```"
-      );
-
-      // const html = marked.parse(
-      //   " # gg \n```json\n" + JSON.stringify(filenames, null, "\n") + "\n```"
-      // );
-
-      // const Hhtml = hljs.highlightAuto(
-      //   JSON.stringify(filenames, null, "\n")
-      // ).value;
-      console.log(html);
-      ChangeVaule(html);
+    const redata = await octokit.request("GET /gists", {
+      headers: { "X-GitHub-Api-Version": "2022-11-28" },
     });
+
+    // console.log(data);a
+
+    redata.forEach((dat) => {
+      const files = dat.files;
+
+      Object.keys(files).forEach((filename) => {
+        filenames.push(filename);
+      });
+    });
+
+    marked.setOptions({
+      highlight: function (code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : "json";
+        return hljs.highlight(code, { language }).value;
+      },
+    });
+
+    const html1 = marked.parse(
+      " # gg \n```json\n" + JSON.stringify(filenames, null, "\n\t") + "\n```"
+    );
+
+    marked.setOptions({
+      highlight: function (code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : "bash";
+        return hljs.highlight(code, { language }).value;
+      },
+    });
+
+    const html2 = marked.parse("\n```bash\n" + sting1 + "\n```");
+
+    const html = html1 + html2;
+
+    // const html = marked.parse(
+    //   " # gg \n```json\n" + JSON.stringify(filenames, null, "\n") + "\n```"
+    // );
+
+    // const Hhtml = hljs.highlightAuto(
+    //   JSON.stringify(filenames, null, "\n")
+    // ).value;
+    console.log(html);
+    ChangeVaule(html);
   }
 
   return (
