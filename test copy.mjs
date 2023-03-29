@@ -11,23 +11,23 @@ const redata = await octokit.request("GET /gists", {
   headers: { "X-GitHub-Api-Version": "2022-11-28" },
 });
 
-
-
 async function displayGistData() {
-    redata.data.forEach(async (dataq) => {
-        Object.keys(dataq.files).forEach(async (file) => {
-          console.log(dataq.files[file].filename);
-          console.log(dataq.id)
-          const response = await octokit.request("GET /gists/{gist_id}", {
-            gist_id: dataq.id,
-            headers: {
-              "X-GitHub-Api-Version": "2022-11-28",
-            },
-          });
-          console.log(response.data);
+  for (const dataq of redata.data) {
+    const files = Object.keys(dataq.files);
+    const responses = await Promise.all(
+      files.map((file) =>
+        octokit.request("GET /gists/{gist_id}", {
+          gist_id: dataq.id,
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
         })
-      });
-
-
+      )
+    );
+    for (const response of responses) {
+      console.log(response.data);
+    }
   }
+}
+
 displayGistData();
