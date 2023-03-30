@@ -7,11 +7,12 @@ import { marked } from "marked";
 import InputDialog from "./page";
 import VConsole from "vconsole";
 const vConsole = new VConsole(); // 或者使用配置参数来初始化，详情见文档 const vConsole = new VConsole({ theme: 'dark' }); // 接下来即可照常使用 `console` 等方法 console.log('Hello world');
-if(!localStorage.getItem('github_token'))
-localStorage.setItem("github_token", "vaule");
+if (!localStorage.getItem("github_token"))
+  localStorage.setItem("github_token", "vaule");
 const sting1 = `
 echo hello
 `;
+
 
 export default function App() {
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -35,6 +36,7 @@ export default function App() {
   }, []);
 
   const [vaule, ChangeVaule] = useState("<p>jj</p");
+  const [html3,html3change] = useState("qqq");
 
   async function handleClick() {
     console.log("kk");
@@ -79,10 +81,17 @@ export default function App() {
 
     const html2 = marked.parse("\n```bash\n" + sting1 + "\n```");
 
-    const html3 = "";
+    html3change(
+      <ul>
+        {filenames.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    )
+    ;
+    console.log(html3);
 
     const html = html1 + html2;
-
     // const html = marked.parse(
     //   " # gg \n```json\n" + JSON.stringify(filenames, null, "\n") + "\n```"
     // );
@@ -103,6 +112,7 @@ export default function App() {
       <button onClick={handleClick}>You pressed me times</button>
       <p>Start editing to see some magic happen :)</p>
       <div dangerouslySetInnerHTML={{ __html: vaule }}></div>
+      {html3}
     </div>
   );
 }
