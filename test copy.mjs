@@ -12,7 +12,7 @@ async function displayGistData() {
   const { data } = await octokit.request("GET /gists", {
     headers: { "X-GitHub-Api-Version": "2022-11-28" },
   });
-
+  console.log(data);
   // 并发请求每个 gist 的完整数据
   const responses = await Promise.all(
     data.map((dataq) =>
