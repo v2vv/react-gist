@@ -1,31 +1,37 @@
 import { Octokit } from "@octokit/rest";
+import { promises as fsPromises } from "fs";
 
-const token_git = process.env.TOKEN_GITHUB;
-//console.log(token_git);
+const tokenGit = process.env.TOKEN_GITHUB;
 
 const octokit = new Octokit({
-  auth: token_git,
-});
-
-const redata = await octokit.request("GET /gists", {
-  headers: { "X-GitHub-Api-Version": "2022-11-28" },
+  auth: tokenGit,
 });
 
 async function displayGistData() {
-  for (const dataq of redata.data) {
-    const files = Object.keys(dataq.files);
-    const responses = await Promise.all(
-      files.map((file) =>
-        octokit.request("GET /gists/{gist_id}", {
-          gist_id: dataq.id,
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        })
-      )
-    );
-    for (const response of responses) {
-      console.log(response.data);
+  const { data } = await octokit.request("GET /gists", {
+    headers: { "X-GitHub-Api-Version": "2022-11-28" },
+  });
+
+  const responses = await Promise.all(
+    data.map((dataq) =>
+      octokit.request("GET /gists/{gist_id}", {
+        gist_id: dataq.id,
+        headers: { "X-GitHub-Api-Version": "2022-11-28" },
+      })
+    )
+  );
+
+  for (const response of responses) {
+    const files = response.data.files;
+    for (const filename in files) {
+      if (Object.hasOwnProperty.call(files, filename)) {
+        const dir = "./gists";
+        const content = files[filename].content;
+        const path = `${dir}/${filename}`;
+        await fsPromises.mkdir(dir, { recursive: true });
+        await fsPromises.writeFile(path, content);
+        console.log(`${path} written to file`);
+      }
     }
   }
 }

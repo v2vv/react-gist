@@ -1,0 +1,90 @@
+name: EXCEL_JavaScript_API_Test_1
+description: Create a new snippet from a blank template.
+host: EXCEL
+api_set: {}
+script:
+  content: |
+    $("#run").click(() => tryCatch(run));
+
+    async function run() {
+      await Excel.run(async (context) => {
+        let ac = context.workbook.getSelectedRange();
+        ac.load("address");
+        let sheet = context.workbook.worksheets.getActiveWorksheet();
+        sheet.getRange().clear();
+        let rang = sheet.getRange("k4");
+        rang.values = [[7]];
+        rang.autoFill("K4:K28000", Excel.AutoFillType.fillSeries);
+        let range = context.workbook.getSelectedRange();
+
+        //range.format.fill.color = "yellow";
+        range.load("address");
+        await context.sync();
+        console.log(`The range address was "${range.address}".`);
+
+        //获取指定未知长度连续的范围
+        let extendedRange = rang.getExtendedRange(
+          Excel.KeyboardDirection.down,
+
+          "K4" // If the selected range contains more than one cell, the active cell must be defined.
+        );
+        extendedRange.select();
+        extendedRange.load("cellCount");
+        await context.sync();
+        console.log(`${extendedRange.cellCount}`);
+        console.log(`${extendedRange.cellCount / 32}`);
+        let i = 1;
+        let s = `${ac.address}`;
+        for (let i = 1; i < extendedRange.cellCount / 32; i++) {
+          sheet.getRange(`E${i + 3}`).values = [[`LOAD_${100 + (i - 1) * 20}mA`]];
+          sheet.getRange(`F${i + 3}`).formulas = [[`=AVERAGE(k${(i - 1) * 32 + 4}:k${i * 32 + 3})`]];
+          sheet.getRange(`G${i + 3}`).formulas = [[`=MAX(k${(i - 1) * 32 + 4}:k${i * 32 + 3})`]];
+          sheet.getRange(`H${i + 3}`).formulas = [[`=MIN(k${(i - 1) * 32 + 4}:k${i * 32 + 3})`]];
+          sheet.getRange(`I${i + 3}`).formulas = [
+            [`=MAX(k${(i - 1) * 32 + 4}:k${i * 32 + 3})-MIN(k${(i - 1) * 32 + 4}:k${i * 32 + 3})`]
+          ];
+        }
+      });
+    }
+
+    /** Default helper for invoking an action and handling errors. */
+    async function tryCatch(callback) {
+      try {
+        await callback();
+      } catch (error) {
+        // Note: In a production add-in, you'd want to notify the user through your add-in's UI.
+        console.error(error);
+      }
+    }
+  language: typescript
+template:
+  content: |
+    <button id="run" class="ms-Button">
+        <span class="ms-Button-label">Run</span>
+    </button>
+  language: html
+style:
+  content: |-
+    section.samples {
+        margin-top: 20px;
+    }
+
+    section.samples .ms-Button, section.setup .ms-Button {
+        display: block;
+        margin-bottom: 5px;
+        margin-left: 20px;
+        min-width: 80px;
+    }
+  language: css
+libraries: |
+  https://appsforoffice.microsoft.com/lib/1/hosted/office.js
+  @types/office-js
+
+  office-ui-fabric-js@1.4.0/dist/css/fabric.min.css
+  office-ui-fabric-js@1.4.0/dist/css/fabric.components.min.css
+
+  core-js@2.4.1/client/core.min.js
+  @types/core-js
+
+  jquery@3.1.1
+  @types/jquery@3.3.1
