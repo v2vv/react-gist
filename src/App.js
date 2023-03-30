@@ -13,13 +13,50 @@ const sting1 = `
 echo hello
 `;
 
+const request = " ";
 
 export default function App() {
+  //github token
+  const token_git = localStorage.getItem("github_token");
+  var redata = null;
+  const octokit = new Octokit({
+    auth: token_git,
+  });
+
   const [dialogVisible, setDialogVisible] = useState(false);
 
   const handleOpenDialog = () => {
     setDialogVisible(true);
   };
+const handleContextChange = async (key) => {
+  try {
+    await Promise.all(
+      redata.data.map(async (dataq) => {
+        console.log("data");
+        if (Object.keys(dataq.files)[0] === key) {
+          console.log(dataq.id);
+          const contextTemp = await octokit.request("GET /gists/{gist_id}", {
+            gist_id: dataq.id,
+          });
+          console.log(contextTemp.data);
+         contex1change(contextTemp.data.git_pull_url);
+        }
+      })
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+      
+
+
+        
+        //contex1change(contextTemp);
+      
+
+
 
   useEffect(() => {
     // 配置 highlight.js
@@ -36,20 +73,15 @@ export default function App() {
   }, []);
 
   const [vaule, ChangeVaule] = useState("<p>jj</p");
-  const [html3,html3change] = useState("qqq");
+  const [html3, html3change] = useState("qqq");
+  const [context1, contex1change] = useState("eee");
 
   async function handleClick() {
     console.log("kk");
-    const token_git = localStorage.getItem("github_token");
 
-    //github token
-    const octokit = new Octokit({
-      auth: token_git,
-    });
     //获取所有gists信息
-    const redata = await octokit.request("GET /gists");
-
-    //console.log(redata);
+    redata = await octokit.request("GET /gists");
+    console.log(redata);
     //遍历 gists data
     const filenames = [];
     redata.data.forEach((dat) => {
@@ -84,11 +116,17 @@ export default function App() {
     html3change(
       <ul>
         {filenames.map((item) => (
-          <li key={item}>{item}</li>
+          <li
+            key={item}
+            onClick={() => {
+              handleContextChange(item);
+            }}
+          >
+            {item}
+          </li>
         ))}
       </ul>
-    )
-    ;
+    );
     console.log(html3);
 
     const html = html1 + html2;
@@ -112,7 +150,10 @@ export default function App() {
       <button onClick={handleClick}>You pressed me times</button>
       <p>Start editing to see some magic happen :)</p>
       <div dangerouslySetInnerHTML={{ __html: vaule }}></div>
-      {html3}
+      <div>{html3}</div>
+      <div>
+        <p>{context1}</p>
+      </div>
     </div>
   );
 }
