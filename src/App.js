@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import hljs from "highlight.js";
-import "highlight.js/styles/monokai-sublime.css";
+import "highlight.js/styles/obsidian.css";
 import { marked } from "marked";
 
 const token_git = process.env.TOKEN_GITHUB;
@@ -27,22 +27,18 @@ export default function App() {
 
   const [vaule, ChangeVaule] = useState("<p>jj</p");
 
- async function handleClick() {
+  async function handleClick() {
     console.log("kk");
     const octokit = new Octokit({
       auth: token_git,
     });
 
+    const redata = await octokit.request("GET /gists");
+
+    console.log(redata);
     const filenames = [];
-    const redata = await octokit.request("GET /gists", {
-      headers: { "X-GitHub-Api-Version": "2022-11-28" },
-    });
-
-    // console.log(data);a
-
-    redata.forEach((dat) => {
+    redata.data.forEach((dat) => {
       const files = dat.files;
-
       Object.keys(files).forEach((filename) => {
         filenames.push(filename);
       });
