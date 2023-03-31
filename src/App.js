@@ -48,7 +48,10 @@ export default function App() {
             console.log(contextTemp.data);
             Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
               console.log(contextTemp.data.files[filenameTemp].content);
-              contex1change(contextTemp.data.files[filenameTemp].content);
+
+              contex1change(
+                marked.parse(contextTemp.data.files[filenameTemp].content)
+              );
             });
           }
         })
