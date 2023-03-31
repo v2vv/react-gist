@@ -5,8 +5,8 @@ import hljs from "highlight.js";
 import "highlight.js/styles/obsidian.css";
 import { marked } from "marked";
 import InputDialog from "./page";
-import VConsole from "vconsole";
-const vConsole = new VConsole(); // 或者使用配置参数来初始化，详情见文档 const vConsole = new VConsole({ theme: 'dark' }); // 接下来即可照常使用 `console` 等方法 console.log('Hello world');
+// import VConsole from "vconsole";
+// const vConsole = new VConsole(); // 或者使用配置参数来初始化，详情见文档 const vConsole = new VConsole({ theme: 'dark' }); // 接下来即可照常使用 `console` 等方法 console.log('Hello world');
 if (!localStorage.getItem("github_token"))
   localStorage.setItem("github_token", "vaule");
 const sting1 = `
@@ -16,6 +16,12 @@ echo hello
 const request = " ";
 
 export default function App() {
+  // refrash state
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [vaule, ChangeVaule] = useState("<p>jj</p");
+  const [html3, html3change] = useState("qqq");
+  const [context1, contex1change] = useState("eee");
+
   //github token
   const token_git = localStorage.getItem("github_token");
   var redata = null;
@@ -23,40 +29,34 @@ export default function App() {
     auth: token_git,
   });
 
-  const [dialogVisible, setDialogVisible] = useState(false);
-
+  //输入 github token
   const handleOpenDialog = () => {
     setDialogVisible(true);
   };
-const handleContextChange = async (key) => {
-  try {
-    await Promise.all(
-      redata.data.map(async (dataq) => {
-        console.log("data");
-        if (Object.keys(dataq.files)[0] === key) {
-          console.log(dataq.id);
-          const contextTemp = await octokit.request("GET /gists/{gist_id}", {
-            gist_id: dataq.id,
-          });
-          console.log(contextTemp.data);
-         contex1change(contextTemp.data.git_pull_url);
-        }
-      })
-    );
-  } catch (error) {
-    console.error(error);
-  }
-};
 
-
-      
-
-
-        
-        //contex1change(contextTemp);
-      
-
-
+  //内容输出触发函数
+  const handleContextChange = async (key) => {
+    try {
+      await Promise.all(
+        redata.data.map(async (dataq) => {
+          console.log("data");
+          if (Object.keys(dataq.files)[0] === key) {
+            console.log(dataq.id);
+            const contextTemp = await octokit.request("GET /gists/{gist_id}", {
+              gist_id: dataq.id,
+            });
+            console.log(contextTemp.data);
+            Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
+              console.log(contextTemp.data.files[filenameTemp].content);
+              contex1change(contextTemp.data.files[filenameTemp].content);
+            });
+          }
+        })
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     // 配置 highlight.js
@@ -71,10 +71,6 @@ const handleContextChange = async (key) => {
       hljs.highlightElement(el);
     });
   }, []);
-
-  const [vaule, ChangeVaule] = useState("<p>jj</p");
-  const [html3, html3change] = useState("qqq");
-  const [context1, contex1change] = useState("eee");
 
   async function handleClick() {
     console.log("kk");
@@ -152,7 +148,7 @@ const handleContextChange = async (key) => {
       <div dangerouslySetInnerHTML={{ __html: vaule }}></div>
       <div>{html3}</div>
       <div>
-        <p>{context1}</p>
+        <pre>{context1}</pre>
       </div>
     </div>
   );
