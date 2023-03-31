@@ -133,3 +133,4 @@ dist
 .pnp.*
 .vscode
 .gitpod.yml
+gists
