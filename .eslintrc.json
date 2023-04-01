@@ -10,8 +10,6 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier"],
-  "rules": {
-    "prettier/prettier": "error" // 开启规则
-  }
+  "plugins": ["react"],
+  "rules": {}
 }
