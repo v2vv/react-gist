@@ -17,11 +17,13 @@ width: 30%;
 
 div .nav .nav_left {
 float: left;
-
 }
 
 
 .context {
-width: 300;
+width: 1000;
+word-wrap: break-word;
+word-break:normal;
+white-space:normal;
 
 }

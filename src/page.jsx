@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-function InputDialog() {
-  const [inputValue, setInputValue] = useState('');
+function InputDialog () {
+  const [inputValue, setInputValue] = useState('')
 
   const handleSave = () => {
-    localStorage.setItem('github_token', inputValue);
-    setInputValue('');
+    localStorage.setItem('github_token', inputValue)
+    setInputValue('')
   }
 
   return (
@@ -14,7 +14,7 @@ function InputDialog() {
       <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
       <button onClick={handleSave}>Save</button>
     </div>
-  );
+  )
 }
 
-export default InputDialog;
+export default InputDialog

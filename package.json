@@ -6,6 +6,7 @@
     "@octokit/rest": "19.0.7",
     "@types/react": ">=16",
     "highlight.js": "^11.7.0",
+    "lint-staged": "^13.2.0",
     "marked": "^4.2.12",
     "mongodb": "^5.1.0",
     "react": "18.2.0",
@@ -18,10 +19,21 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/marked": "^4.0.8",
+    "eslint": "^8.37.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "husky": "^8.0.0",
     "react-scripts": "latest"
   },
   "browserslist": {
@@ -35,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+
+  "lint-staged": { 
+    "*.{js,jsx,ts,tsx,vue,json}": [ "eslint --fix" ] }
 }
