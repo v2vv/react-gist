@@ -83,7 +83,7 @@ export default function App() {
         filenames[filename] = dat.id;
       });
     });
-    console.log(filenames);
+    console.log(filenames); 
     //设置 hightlightjs json
     marked.setOptions({
       highlight: function (code, lang) {
