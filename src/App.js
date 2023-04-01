@@ -5,8 +5,8 @@ import hljs from "highlight.js";
 import "highlight.js/styles/obsidian.css";
 import { marked } from "marked";
 import InputDialog from "./page";
-// import VConsole from "vconsole";
-// const vConsole = new VConsole(); // 或者使用配置参数来初始化，详情见文档 const vConsole = new VConsole({ theme: 'dark' }); // 接下来即可照常使用 `console` 等方法 console.log('Hello world');
+import VConsole from "vconsole";
+const vConsole = new VConsole(); // 或者使用配置参数来初始化，详情见文档 const vConsole = new VConsole({ theme: 'dark' }); // 接下来即可照常使用 `console` 等方法 console.log('Hello world');
 if (!localStorage.getItem("github_token"))
   localStorage.setItem("github_token", "vaule");
 const sting1 = `
@@ -31,34 +31,28 @@ export default function App() {
 
   //输入 github token
   const handleOpenDialog = () => {
-    setDialogVisible(true);
+    setDialogVisible(!dialogVisible);
   };
 
   //内容输出触发函数
   const handleContextChange = async (key) => {
-    try {
-      await Promise.all(
-        redata.data.map(async (dataq) => {
-          console.log("data");
-          if (Object.keys(dataq.files)[0] === key) {
-            console.log(dataq.id);
-            const contextTemp = await octokit.request("GET /gists/{gist_id}", {
-              gist_id: dataq.id,
-            });
-            console.log(contextTemp.data);
-            Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
-              console.log(contextTemp.data.files[filenameTemp].content);
+    const contextTemp = await octokit.request("GET /gists/{gist_id}", {
+      gist_id: key,
+    });
+    console.log(contextTemp.data);
+    Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
 
-              contex1change(
-                marked.parse(contextTemp.data.files[filenameTemp].content)
-              );
-            });
-          }
-        })
-      );
-    } catch (error) {
-      console.error(error);
-    }
+      console.log(contextTemp.data.files[filenameTemp].content);
+
+      marked.setOptions({
+        highlight: function (code, lang) {
+          const language = hljs.getLanguage(lang) ? lang : "auto";
+          return hljs.highlight(code, { language }).value;
+        },
+      });
+
+      contex1change(marked.parse(contextTemp.data.files[filenameTemp].content));
+    });
   };
 
   useEffect(() => {
@@ -82,14 +76,14 @@ export default function App() {
     redata = await octokit.request("GET /gists");
     console.log(redata);
     //遍历 gists data
-    const filenames = [];
+    const filenames = {};
     redata.data.forEach((dat) => {
       const files = dat.files;
       Object.keys(files).forEach((filename) => {
-        filenames.push(filename);
+        filenames[filename] = dat.id;
       });
     });
-
+    console.log(filenames);
     //设置 hightlightjs json
     marked.setOptions({
       highlight: function (code, lang) {
@@ -113,18 +107,20 @@ export default function App() {
     const html2 = marked.parse("\n```bash\n" + sting1 + "\n```");
 
     html3change(
+    <div className="context">
       <ul>
-        {filenames.map((item) => (
+        {Object.keys(filenames).map((item) => (
           <li
             key={item}
             onClick={() => {
-              handleContextChange(item);
+              handleContextChange(filenames[item]);
             }}
           >
             {item}
           </li>
         ))}
       </ul>
+      </div>
     );
     console.log(html3);
 
@@ -142,17 +138,18 @@ export default function App() {
 
   return (
     <div>
-      <button onClick={handleOpenDialog}>Open Dialog</button>
-      {dialogVisible && <InputDialog />}
-
-      <h1>Hello StackBlitz! </h1>
+      <div className="nav">
+        <div className="nav_left">
+          <button onClick={handleOpenDialog}>Open Dialog</button>
+          {dialogVisible && <InputDialog />}
+        </div>
+        <h1>Github gist</h1>
+      </div>
       <button onClick={handleClick}>You pressed me times</button>
       <p>Start editing to see some magic happen :)</p>
-      <div dangerouslySetInnerHTML={{ __html: vaule }}></div>
-      <div>{html3}</div>
-      <div>
-        <pre>{context1}</pre>
-      </div>
+      <div id="flex_left" dangerouslySetInnerHTML={{ __html: vaule }}></div>
+      <div id="flex_middle">{html3}</div>
+      <div id="flex_right" dangerouslySetInnerHTML={{ __html: context1 }}></div>
     </div>
   );
 }
