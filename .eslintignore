@@ -1,0 +1,31 @@
+// .eslintignore
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+.history
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json×t
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+// 不加这两个会报错
+.cz-config.js
+package.json
+*.json
