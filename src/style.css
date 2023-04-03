@@ -32,12 +32,12 @@ p {
   background-color: azure;
 }
 
-pre,
-code {
+pre {
   word-wrap: initial !important;
   word-break: keep-all !important;
   white-space: pre !important;
   overflow: scroll !important;
+  background-color: aqua;
 }
 
 .nav_left {
@@ -60,7 +60,8 @@ code {
 }
 
 #flex_right {
-  flex: 1 0.1 200px;
+  flex: 1 0.1 60%;
+  width: 60%;
   word-wrap: break-word;
   word-break: break-all;
   white-space: pre-wrap;
