@@ -24,6 +24,7 @@ export default function App() {
   const [vaule, ChangeVaule] = useState("<p>jj</p");
   const [html3, html3change] = useState("qqq");
   const [context1, contex1change] = useState("eee");
+  const [hidden_json, hande_hiddle] = useState(false);
 
   // github token
   const token_git = localStorage.getItem("github_token");
@@ -35,6 +36,10 @@ export default function App() {
   // 输入 github token
   const handleOpenDialog = () => {
     setDialogVisible(!dialogVisible);
+  };
+
+  const hande_hiddle_clic = () => {
+    hande_hiddle(!hidden_json);
   };
 
   // 内容输出触发函数
@@ -151,9 +156,22 @@ export default function App() {
       </div>
       <button onClick={handleClick}>You pressed me times</button>
       <p>Start editing to see some magic happen :)</p>
-      <div id="flex_left" dangerouslySetInnerHTML={{ __html: vaule }}></div>
-      <div id="flex_middle">{html3}</div>
-      <div id="flex_right" dangerouslySetInnerHTML={{ __html: context1 }}></div>
+      <button onClick={hande_hiddle_clic}>hide json</button>
+      <div className="context_flex">
+        {hidden_json && (
+          <div
+            id="flex_left"
+            dangerouslySetInnerHTML={{
+              __html: vaule,
+            }}
+          ></div>
+        )}
+        <div id="flex_middle">{html3}</div>
+        <div
+          id="flex_right"
+          dangerouslySetInnerHTML={{ __html: context1 }}
+        ></div>
+      </div>
     </div>
   );
 }

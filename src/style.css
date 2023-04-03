@@ -9,14 +9,12 @@ p {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 #flex_left {
-  float: left;
+  flex: 1 1 300px;
   background: #0902;
-  width: 50%;
 }
 
 #flex_middle {
-  float: left;
-  width: 30%;
+  flex: 1 1 300px;
 }
 
 .nav {
@@ -42,9 +40,14 @@ p {
   color: chocolate;
 }
 
-.context {
-  width: 100;
+.context_flex {
+  display: flex;
+}
+
+#flex_right {
+  flex: 1 1 800px;
   word-wrap: break-word;
-  word-break: normal;
-  white-space: normal;
+  word-break: break-all;
+  white-space: pre-wrap;
+  background-color: antiquewhite;
 }
