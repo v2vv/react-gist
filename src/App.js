@@ -145,7 +145,9 @@ export default function App() {
           <button onClick={handleOpenDialog}>Open Dialog</button>
           {dialogVisible && <InputDialog />}
         </div>
-        <h1>Github gist</h1>
+        <div className="nav_center">
+          <h1>Github gist</h1>
+        </div>
       </div>
       <button onClick={handleClick}>You pressed me times</button>
       <p>Start editing to see some magic happen :)</p>
