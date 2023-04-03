@@ -10,13 +10,18 @@ p {
 }
 #flex_left {
   flex: 0 0 300px;
+  width: 300px;
   background: #0902;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
 }
 
 #flex_middle {
   flex: 0 0 300px;
   word-wrap: break-word;
   word-break: break-all;
+  white-space: pre-wrap;
 }
 
 .nav {
@@ -25,6 +30,14 @@ p {
   border: 0;
   width: 100%;
   background-color: azure;
+}
+
+pre,
+code {
+  word-wrap: initial !important;
+  word-break: keep-all !important;
+  white-space: pre !important;
+  overflow: scroll !important;
 }
 
 .nav_left {
@@ -52,5 +65,4 @@ p {
   word-break: break-all;
   white-space: pre-wrap;
   background-color: antiquewhite;
-  overflow: scroll;
 }

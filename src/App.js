@@ -3,7 +3,7 @@ import { Octokit } from "@octokit/rest";
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import hljs from "highlight.js";
-import "highlight.js/styles/obsidian.css";
+import "highlight.js/styles/github.css";
 import { marked } from "marked";
 import InputDialog from "./page";
 import VConsole from "vconsole";
