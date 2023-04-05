@@ -6,10 +6,13 @@ import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
 import { marked } from "marked";
 import InputDialog from "./page";
-import VConsole from "vconsole";
+// import VConsole from "vconsole";
+import eruda from "eruda";
 
 // eslint-disable-next-line no-new
-new VConsole();
+// new VConsole();
+
+eruda.init();
 
 if (!localStorage.getItem("github_token")) {
   localStorage.setItem("github_token", "vaule");
