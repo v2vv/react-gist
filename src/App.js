@@ -31,18 +31,92 @@ export default function App() {
 
   // github token
   const token_git = localStorage.getItem("github_token");
-  let redata = null;
-  const octokit = new Octokit({
-    auth: token_git,
-  });
+  const octokit = new Octokit({ auth: token_git });
+  const redataFunc = async () => {
+    return await octokit.request("GET /gists");
+  };
+
+  // 获取 gists 列表
+  const filenameLoad = async () => {
+    const redata = await redataFunc();
+    console.log(redata);
+    return filenameForeach(redata);
+  };
+
+  // 遍历 gists 并生成 filename:id key:vaule
+  const filenameForeach = (redata) => {
+    const filenames = {};
+    // eslint-disable-next-line array-callback-return
+    redata.data.forEach((dat) => {
+      Object.keys(dat.files).forEach((filename) => {
+        filenames[filename] = dat.id;
+      });
+    });
+    return filenames;
+  };
+
+  // 显示 gists 文件名
+  const filenameShow = (filenames) => {
+    filenameMessage(filenames);
+    // 设置 hightlightjs json
+    html3change(fileList(filenames));
+  };
+
+  function filenameMessage(filenames) {
+    setMarked("json");
+    // 将 gists 信息输出到 markdown 格式字符串
+    const html1 = marked.parse(
+      " # gg \n```json\n" + JSON.stringify(filenames, null, "\n\t") + "\n```"
+    );
+    // 设置 hightlightjs bash
+    const html = html1 + bashShow();
+    console.log(html);
+    ChangeVaule(html);
+  }
+
+  // 显示 bash 代码
+  function bashShow() {
+    setMarked("bash");
+    return marked.parse("\n```bash\n" + sting1 + "\n```");
+  }
 
   // 输入 github token
   const handleOpenDialog = () => {
     setDialogVisible(!dialogVisible);
   };
 
-  const hande_hiddle_clic = () => {
+  // 隐藏 gists Message
+  const hande_hiddle_click = () => {
     hande_hiddle(!hidden_json);
+  };
+
+  // 配置 Marked hightlightjs
+  function setMarked(langName) {
+    marked.setOptions({
+      highlight: function (code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : langName;
+        return hljs.highlight(code, { language }).value;
+      },
+    });
+  }
+
+  const fileList = (names) => {
+    return (
+      <div className="context">
+        <ul>
+          {Object.keys(names).map((item) => (
+            <li
+              key={item}
+              onClick={() => {
+                handleContextChange(names[item]);
+              }}
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   };
 
   // 内容输出触发函数
@@ -53,97 +127,27 @@ export default function App() {
     console.log(contextTemp.data);
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
       console.log(contextTemp.data.files[filenameTemp].content);
-
-      marked.setOptions({
-        highlight: function (code, lang) {
-          const language = hljs.getLanguage(lang) ? lang : "auto";
-          return hljs.highlight(code, { language }).value;
-        },
-      });
-
+      setMarked("json");
       contex1change(marked.parse(contextTemp.data.files[filenameTemp].content));
     });
   };
 
   useEffect(() => {
-    // 配置 highlight.js
-    hljs.configure({
-      // 忽略未经转义的 HTML 字符
-      ignoreUnescapedHTML: true,
-    });
+    // 配置 highlight.js  忽略未经转义的html标签
+    hljs.configure({ ignoreUnescapedHTML: true });
     // 获取到内容中所有的code标签
     const codes = document.querySelectorAll("pre code");
+    // 让code进行高亮
     codes.forEach((el) => {
-      // 让code进行高亮
       hljs.highlightElement(el);
     });
   }, []);
 
   async function handleClick() {
     console.log("kk");
-
-    // 获取所有gists信息
-    redata = await octokit.request("GET /gists");
-    console.log(redata);
-    // 遍历 gists data
-    const filenames = {};
-    redata.data.forEach((dat) => {
-      const files = dat.files;
-      Object.keys(files).forEach((filename) => {
-        filenames[filename] = dat.id;
-      });
-    });
+    const filenames = await filenameLoad();
     console.log(filenames);
-    // 设置 hightlightjs json
-    marked.setOptions({
-      highlight: function (code, lang) {
-        const language = hljs.getLanguage(lang) ? lang : "json";
-        return hljs.highlight(code, { language }).value;
-      },
-    });
-    // 将 gists 信息输出到 markdown 格式字符串
-    const html1 = marked.parse(
-      " # gg \n```json\n" + JSON.stringify(filenames, null, "\n\t") + "\n```"
-    );
-
-    // 设置 hightlightjs bash
-    marked.setOptions({
-      highlight: function (code, lang) {
-        const language = hljs.getLanguage(lang) ? lang : "bash";
-        return hljs.highlight(code, { language }).value;
-      },
-    });
-
-    const html2 = marked.parse("\n```bash\n" + sting1 + "\n```");
-
-    html3change(
-      <div className="context">
-        <ul>
-          {Object.keys(filenames).map((item) => (
-            <li
-              key={item}
-              onClick={() => {
-                handleContextChange(filenames[item]);
-              }}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-    console.log(html3);
-
-    const html = html1 + html2;
-    // const html = marked.parse(
-    //   " # gg \n```json\n" + JSON.stringify(filenames, null, "\n") + "\n```"
-    // );
-
-    // const Hhtml = hljs.highlightAuto(
-    //   JSON.stringify(filenames, null, "\n")
-    // ).value;
-    console.log(html);
-    ChangeVaule(html);
+    filenameShow(filenames);
   }
 
   return (
@@ -159,7 +163,7 @@ export default function App() {
       </div>
       <button onClick={handleClick}>You pressed me times</button>
       <p>Start editing to see some magic happen :)</p>
-      <button onClick={hande_hiddle_clic}>hide json</button>
+      <button onClick={hande_hiddle_click}>hide json</button>
       <div className="context_flex">
         {hidden_json && (
           <div
