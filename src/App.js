@@ -29,6 +29,7 @@ export default function App() {
   const [html3, html3change] = useState("qqq");
   const [context1, contex1change] = useState("eee");
   const [hidden_json, hande_hiddle] = useState(false);
+  const [textMd, textChange] = useState(" 78");
 
   // github token
   const token_git = localStorage.getItem("github_token");
@@ -61,7 +62,14 @@ export default function App() {
     filenameMessage(filenames);
     // 设置 hightlightjs json
     html3change(fileList(filenames));
+    showFirstGist(filenames);
   };
+
+  // 显示第一条 gists
+  function showFirstGist(filenames) {
+    // console.log(Object.keys(filenames)[0]);
+    handleContextChange(filenames[Object.keys(filenames)[0]]);
+  }
 
   function filenameMessage(filenames) {
     setMarked("json");
@@ -90,6 +98,11 @@ export default function App() {
   const hande_hiddle_click = () => {
     hande_hiddle(!hidden_json);
   };
+
+  function handleMdView(event) {
+    textChange(event.target.value);
+    contex1change(marked.parse(event.target.value));
+  }
 
   // 配置 Marked hightlightjs
   function setMarked(langName) {
@@ -129,7 +142,9 @@ export default function App() {
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
       console.log(contextTemp.data.files[filenameTemp].content);
       setMarked("json");
+
       contex1change(marked.parse(contextTemp.data.files[filenameTemp].content));
+      textChange(contextTemp.data.files[filenameTemp].content);
     });
   };
 
@@ -175,6 +190,14 @@ export default function App() {
           ></div>
         )}
         <div id="flex_middle">{html3}</div>
+        <div id="flex_edit">
+          <textarea
+            rows={100}
+            cols={80}
+            value={textMd}
+            onChange={handleMdView}
+          ></textarea>
+        </div>
         <div
           id="flex_right"
           dangerouslySetInnerHTML={{ __html: context1 }}
