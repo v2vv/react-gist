@@ -180,7 +180,7 @@ export default function App() {
           dangerouslySetInnerHTML={{ __html: context1 }}
         ></div>
       </div>
-      <Edit></Edit>
+      <Edit text2={context1}></Edit>
     </div>
   );
 }
