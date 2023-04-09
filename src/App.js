@@ -8,6 +8,7 @@ import { marked } from "marked";
 import InputDialog from "./page";
 // import VConsole from "vconsole";
 import eruda from "eruda";
+import Edit from "./Edit";
 
 // eslint-disable-next-line no-new
 // new VConsole();
@@ -179,6 +180,7 @@ export default function App() {
           dangerouslySetInnerHTML={{ __html: context1 }}
         ></div>
       </div>
+      <Edit></Edit>
     </div>
   );
 }
