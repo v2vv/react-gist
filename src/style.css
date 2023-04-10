@@ -79,14 +79,18 @@ pre {
   background-color: antiquewhite;
 }
 
-div ol {
-  white-space: nowrap;
+ol {
+  white-space: normal;
   word-break: break-all;
   word-wrap: break-word;
 }
 
-div ol li {
+ol li {
   white-space: normal;
   word-break: break-all;
   word-wrap: break-word;
+}
+
+ul {
+  white-space: normal;
 }

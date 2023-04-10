@@ -122,7 +122,7 @@ export default function App() {
             <li
               key={item}
               onClick={() => {
-                handleContextChange(names[item]);
+                handleContextChange(names[item], item);
               }}
             >
               {item}
@@ -134,17 +134,21 @@ export default function App() {
   };
 
   // 内容输出触发函数
-  const handleContextChange = async (key) => {
+  const handleContextChange = async (key, filename) => {
     const contextTemp = await octokit.request("GET /gists/{gist_id}", {
       gist_id: key,
     });
     console.log(contextTemp.data);
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
       console.log(contextTemp.data.files[filenameTemp].content);
-      setMarked("json");
+      if (filenameTemp === filename) {
+        setMarked("json");
 
-      contex1change(marked.parse(contextTemp.data.files[filenameTemp].content));
-      textChange(contextTemp.data.files[filenameTemp].content);
+        contex1change(
+          marked.parse(contextTemp.data.files[filenameTemp].content)
+        );
+        textChange(contextTemp.data.files[filenameTemp].content);
+      }
     });
   };
 
