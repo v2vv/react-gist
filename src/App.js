@@ -192,8 +192,8 @@ export default function App() {
         <div id="flex_middle">{html3}</div>
         <div id="flex_edit">
           <textarea
-            rows={100}
-            cols={80}
+            rows={60}
+            cols={60}
             value={textMd}
             onChange={handleMdView}
           ></textarea>
