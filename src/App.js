@@ -9,6 +9,7 @@ import InputDialog from "./page";
 // import VConsole from "vconsole";
 import eruda from "eruda";
 import Edit from "./Edit";
+import Line from "./line";
 
 // eslint-disable-next-line no-new
 // new VConsole();
@@ -208,6 +209,7 @@ export default function App() {
         ></div>
       </div>
       <Edit text2={context1}></Edit>
+      <Line text={textMd}></Line>
     </div>
   );
 }

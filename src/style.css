@@ -94,3 +94,14 @@ ol li {
 ul {
   white-space: normal;
 }
+
+textarea {
+  font-size: 15;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.line {
+  width: 40%;
+  background-color: antiquewhite;
+}
