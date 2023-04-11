@@ -10,6 +10,7 @@ import InputDialog from "./page";
 import eruda from "eruda";
 import Edit from "./Edit";
 import Line from "./line";
+import Monaco from "./monaco";
 
 // eslint-disable-next-line no-new
 // new VConsole();
@@ -210,6 +211,7 @@ export default function App() {
       </div>
       <Edit text2={context1}></Edit>
       <Line text={textMd}></Line>
+      <Monaco></Monaco>
     </div>
   );
 }
