@@ -212,7 +212,7 @@ export default function App() {
       <Edit text2={context1}></Edit>
       <Line text={textMd}></Line>
       <div id="edit">
-        <Monaco></Monaco>
+        <Monaco content={textMd}></Monaco>
       </div>
     </div>
   );

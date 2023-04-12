@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
+import Proptypes from "prop-types";
 
-function Monaco() {
+function Monaco({ content }) {
   const editorRef = useRef(null);
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
@@ -17,11 +18,15 @@ function Monaco() {
       <Editor
         height="90vh"
         defaultLanguage="javascript"
-        defaultValue="// some comment"
+        defaultValue={content}
         onMount={handleEditorDidMount}
       />
     </>
   );
 }
+
+Monaco.propTypes = {
+  content: Proptypes.string.isRequired,
+};
 
 export default Monaco;
