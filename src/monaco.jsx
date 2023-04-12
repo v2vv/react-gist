@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
 
 function Monaco() {
+  const editorRef = useRef(null);
+  function handleEditorDidMount(editor, monaco) {
+    editorRef.current = editor;
+  }
+
+  function showValue() {
+    alert(editorRef.current.getValue());
+  }
+
   return (
-    <Editor
-      height="90vh"
-      defaultLanguage="javascript"
-      defaultValue="// some comment"
-    />
+    <>
+      <button onClick={showValue}>Show value</button>
+      <Editor
+        height="90vh"
+        defaultLanguage="javascript"
+        defaultValue="// some comment"
+        onMount={handleEditorDidMount}
+      />
+    </>
   );
 }
 
