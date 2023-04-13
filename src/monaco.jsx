@@ -8,17 +8,12 @@ function Monaco({ nocontext, context, filename, language, onValidate }) {
     editorRef.current = editor;
   }
 
-  function showValue() {
-    alert(editorRef.current.getValue());
-  }
-
   function handleOnValidate() {
     onValidate(editorRef.current.getValue());
   }
 
   return (
     <>
-      <button onClick={showValue}>Show value</button>
       <Editor
         height="90vh"
         defaultLanguage={nocontext ? "no" : language}

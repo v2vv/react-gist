@@ -30,6 +30,7 @@ h1 {
 #flex_edit {
   flex: 1, 0.1, 50%;
   width: 50%;
+  margin-right: 8px;
 }
 
 .nav {
