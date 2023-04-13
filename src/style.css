@@ -21,6 +21,7 @@ h1 {
   white-space: pre-wrap;
   overflow: scroll;
   z-index: 1;
+  background-color: antiquewhite;
 }
 
 #flex_middle {
@@ -75,6 +76,7 @@ pre {
 
 #flex_right {
   flex: 1 0.1 30%;
+  height: 100vh;
   overflow: scroll;
   word-wrap: break-word;
   word-break: break-all;
