@@ -11,7 +11,7 @@ import eruda from "eruda";
 import Edit from "./Edit";
 import Line from "./line";
 import Monaco from "./monaco";
-
+import files from "./files";
 // eslint-disable-next-line no-new
 // new VConsole();
 
@@ -172,6 +172,8 @@ export default function App() {
     filenameShow(filenames);
   }
 
+  const [filename, setfileName] = useState("script.js");
+
   return (
     <div>
       <div className="nav">
@@ -212,7 +214,14 @@ export default function App() {
       <Edit text2={context1}></Edit>
       <Line text={textMd}></Line>
       <div id="edit">
-        <Monaco content={textMd}></Monaco>
+        <button
+          onClick={() => {
+            setfileName("style.css");
+          }}
+        >
+          css
+        </button>
+        <Monaco files={files} filename={filename}></Monaco>
       </div>
     </div>
   );

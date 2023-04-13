@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
 import Proptypes from "prop-types";
 
-function Monaco({ content }) {
+function Monaco({ files, filename }) {
   const editorRef = useRef(null);
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
@@ -17,8 +17,9 @@ function Monaco({ content }) {
       <button onClick={showValue}>Show value</button>
       <Editor
         height="90vh"
-        defaultLanguage="javascript"
-        defaultValue={content}
+        defaultLanguage={files[filename].language}
+        path={filename}
+        defaultValue={files[filename].value}
         onMount={handleEditorDidMount}
       />
     </>
@@ -26,7 +27,8 @@ function Monaco({ content }) {
 }
 
 Monaco.propTypes = {
-  content: Proptypes.string.isRequired,
+  files: Proptypes.object.isRequired,
+  filename: Proptypes.string.isRequired,
 };
 
 export default Monaco;
