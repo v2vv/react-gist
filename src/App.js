@@ -182,6 +182,10 @@ export default function App() {
     filenameShow(filenames);
   }
 
+  function monacoTextChange(text) {
+    contex1change(marked.parse(text));
+  }
+
   return (
     <div>
       <div className="nav">
@@ -212,6 +216,7 @@ export default function App() {
             context={textMd}
             filename={filenameMonaco}
             language={language}
+            onValidate={monacoTextChange}
           ></Monaco>
         </div>
         <div
