@@ -8,10 +8,8 @@ import { marked } from "marked";
 import InputDialog from "./page";
 // import VConsole from "vconsole";
 import eruda from "eruda";
-import Edit from "./Edit";
-import Line from "./line";
 import Monaco from "./monaco";
-import files from "./files";
+// import files from "./files";
 // eslint-disable-next-line no-new
 // new VConsole();
 
@@ -31,7 +29,11 @@ export default function App() {
   const [html3, html3change] = useState("qqq");
   const [context1, contex1change] = useState("eee");
   const [hidden_json, hande_hiddle] = useState(false);
-  const [textMd, textChange] = useState(" 78");
+  const [nocontext, setnoContext] = useState(true);
+  const [language, setlanguage] = useState("markdown");
+  const [filenameMonaco, setfileNamemonavo] = useState("welcome");
+
+  const [textMd, textChange] = useState("hello");
 
   // github token
   const token_git = localStorage.getItem("github_token");
@@ -39,6 +41,8 @@ export default function App() {
   const redataFunc = async () => {
     return await octokit.request("GET /gists");
   };
+
+  let filenames = {};
 
   // 获取 gists 列表
   const filenameLoad = async () => {
@@ -49,11 +53,11 @@ export default function App() {
 
   // 遍历 gists 并生成 filename:id key:vaule
   const filenameForeach = (redata) => {
-    const filenames = {};
     // eslint-disable-next-line array-callback-return
     redata.data.forEach((dat) => {
       Object.keys(dat.files).forEach((filename) => {
-        filenames[filename] = dat.id;
+        filenames[filename] = {};
+        filenames[filename].id = dat.id;
       });
     });
     return filenames;
@@ -70,7 +74,10 @@ export default function App() {
   // 显示第一条 gists
   function showFirstGist(filenames) {
     // console.log(Object.keys(filenames)[0]);
-    handleContextChange(filenames[Object.keys(filenames)[0]]);
+    handleContextChange(
+      filenames[Object.keys(filenames)[0]].id,
+      Object.keys(filenames)[0]
+    );
   }
 
   function filenameMessage(filenames) {
@@ -101,10 +108,10 @@ export default function App() {
     hande_hiddle(!hidden_json);
   };
 
-  function handleMdView(event) {
-    textChange(event.target.value);
-    contex1change(marked.parse(event.target.value));
-  }
+  // function handleMdView(event) {
+  //   textChange(event.target.value);
+  //  contex1change(marked.parse(event.target.value));
+  // }
 
   // 配置 Marked hightlightjs
   function setMarked(langName) {
@@ -124,7 +131,7 @@ export default function App() {
             <li
               key={item}
               onClick={() => {
-                handleContextChange(names[item], item);
+                handleContextChange(names[item].id, item);
               }}
             >
               {item}
@@ -149,6 +156,9 @@ export default function App() {
         contex1change(
           marked.parse(contextTemp.data.files[filenameTemp].content)
         );
+        setnoContext(false);
+        setlanguage("markdown");
+        setfileNamemonavo(filenameTemp);
         textChange(contextTemp.data.files[filenameTemp].content);
       }
     });
@@ -167,12 +177,10 @@ export default function App() {
 
   async function handleClick() {
     console.log("kk");
-    const filenames = await filenameLoad();
+    filenames = await filenameLoad();
     console.log(filenames);
     filenameShow(filenames);
   }
-
-  const [filename, setfileName] = useState("script.js");
 
   return (
     <div>
@@ -199,29 +207,17 @@ export default function App() {
         )}
         <div id="flex_middle">{html3}</div>
         <div id="flex_edit">
-          <textarea
-            rows={60}
-            cols={60}
-            value={textMd}
-            onChange={handleMdView}
-          ></textarea>
+          <Monaco
+            nocontext={nocontext}
+            context={textMd}
+            filename={filenameMonaco}
+            language={language}
+          ></Monaco>
         </div>
         <div
           id="flex_right"
           dangerouslySetInnerHTML={{ __html: context1 }}
         ></div>
-      </div>
-      <Edit text2={context1}></Edit>
-      <Line text={textMd}></Line>
-      <div id="edit">
-        <button
-          onClick={() => {
-            setfileName("style.css");
-          }}
-        >
-          css
-        </button>
-        <Monaco files={files} filename={filename}></Monaco>
       </div>
     </div>
   );
