@@ -3,8 +3,7 @@
 import { Octokit } from "@octokit/rest";
 
 const octokitInit = (token) => new Octokit({ auth: token });
-
-async function gistUpdate({ token, id, dsci, filename, context }) {
+const gistUpdate = async ({ token, id, dsci, filename, context }) => {
   await octokitInit(token).request("PATCH /gists/{gist_id}", {
     gist_id: id,
     description: dsci,
@@ -14,7 +13,7 @@ async function gistUpdate({ token, id, dsci, filename, context }) {
       },
     },
   });
-}
+};
 
 async function gistList({ token }) {
   // console.log(token);
