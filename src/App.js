@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Octokit } from "@octokit/rest";
+import { gistGet, gistList } from "./gists";
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import hljs from "highlight.js";
@@ -36,10 +36,9 @@ export default function App() {
   const [textMd, textChange] = useState("hello");
 
   // github token
-  const token_git = localStorage.getItem("github_token");
-  const octokit = new Octokit({ auth: token_git });
+  const token = localStorage.getItem("github_token");
   const redataFunc = async () => {
-    return await octokit.request("GET /gists");
+    return await gistList({ token });
   };
 
   let filenames = {};
@@ -143,10 +142,8 @@ export default function App() {
   };
 
   // 内容输出触发函数
-  const handleContextChange = async (key, filename) => {
-    const contextTemp = await octokit.request("GET /gists/{gist_id}", {
-      gist_id: key,
-    });
+  const handleContextChange = async (id, filename) => {
+    const contextTemp = await gistGet({ token, id });
     console.log(contextTemp.data);
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
       console.log(contextTemp.data.files[filenameTemp].content);
