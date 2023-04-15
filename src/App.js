@@ -1,14 +1,15 @@
 /* eslint-disable camelcase */
-import { gistGet, gistList } from "./gists";
+import { gistGet, gistList } from "./compment/gists";
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
 import { marked } from "marked";
-import InputDialog from "./page";
+import InputDialog from "./compment/page";
 // import VConsole from "vconsole";
 import eruda from "eruda";
-import Monaco from "./monaco";
+import Monaco from "./compment/monaco";
+import Gistlists from "./compment/Gistlist";
 // import files from "./files";
 // eslint-disable-next-line no-new
 // new VConsole();
@@ -66,7 +67,18 @@ export default function App() {
   const filenameShow = (filenames) => {
     filenameMessage(filenames);
     // 设置 hightlightjs json
-    html3change(fileList(filenames));
+    const temp = (
+      <>
+        <Gistlists
+          names={filenames}
+          handleContextChange={handleContextChange}
+        />
+      </>
+    );
+    // html3change(fileList(filenames));
+    console.log(temp);
+    html3change(temp);
+
     showFirstGist(filenames);
   };
 
@@ -122,24 +134,24 @@ export default function App() {
     });
   }
 
-  const fileList = (names) => {
-    return (
-      <div className="context">
-        <ul>
-          {Object.keys(names).map((item) => (
-            <li
-              key={item}
-              onClick={() => {
-                handleContextChange(names[item].id, item);
-              }}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
+  // const fileList = (names) => {
+  //   return (
+  //     <div className="context">
+  //       <ul>
+  //         {Object.keys(names).map((item) => (
+  //           <li
+  //             key={item}
+  //             onClick={() => {
+  //               handleContextChange(names[item].id, item);
+  //             }}
+  //           >
+  //             {item}
+  //           </li>
+  //         ))}
+  //       </ul>
+  //     </div>
+  //   );
+  // };
 
   // 内容输出触发函数
   const handleContextChange = async (id, filename) => {
