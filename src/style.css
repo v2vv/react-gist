@@ -27,10 +27,6 @@ h1 {
 #flex_middle {
   flex: 0 0 20%;
   height: 30%;
-  word-wrap: break-word;
-  word-break: break-all;
-  white-space: pre-wrap;
-  overflow: scroll;
 }
 
 #flex_edit {
