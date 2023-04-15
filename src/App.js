@@ -2,9 +2,10 @@
 import { gistGet, gistList } from "./compment/gists";
 import React, { useEffect, useState } from "react";
 import "./style.css";
-import hljs from "highlight.js";
-import "highlight.js/styles/github.css";
-import { marked } from "marked";
+// import hljs from "highlight.js";
+// import "highlight.js/styles/github.css";
+// import { marked } from "marked";
+import { markedConvert, hljsEffect } from "./compment/marked";
 import InputDialog from "./compment/page";
 // import VConsole from "vconsole";
 import eruda from "eruda";
@@ -92,10 +93,10 @@ export default function App() {
   }
 
   function filenameMessage(filenames) {
-    setMarked("json");
     // 将 gists 信息输出到 markdown 格式字符串
-    const html1 = marked.parse(
-      " # gg \n```json\n" + JSON.stringify(filenames, null, "\n\t") + "\n```"
+    const html1 = markedConvert(
+      " # gg \n```json\n" + JSON.stringify(filenames, null, "\n\t") + "\n```",
+      "json"
     );
     // 设置 hightlightjs bash
     const html = html1 + bashShow();
@@ -105,8 +106,7 @@ export default function App() {
 
   // 显示 bash 代码
   function bashShow() {
-    setMarked("bash");
-    return marked.parse("\n```bash\n" + sting1 + "\n```");
+    return markedConvert("\n```bash\n" + sting1 + "\n```", "json");
   }
 
   // 输入 github token
@@ -124,35 +124,6 @@ export default function App() {
   //  contex1change(marked.parse(event.target.value));
   // }
 
-  // 配置 Marked hightlightjs
-  function setMarked(langName) {
-    marked.setOptions({
-      highlight: function (code, lang) {
-        const language = hljs.getLanguage(lang) ? lang : langName;
-        return hljs.highlight(code, { language }).value;
-      },
-    });
-  }
-
-  // const fileList = (names) => {
-  //   return (
-  //     <div className="context">
-  //       <ul>
-  //         {Object.keys(names).map((item) => (
-  //           <li
-  //             key={item}
-  //             onClick={() => {
-  //               handleContextChange(names[item].id, item);
-  //             }}
-  //           >
-  //             {item}
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     </div>
-  //   );
-  // };
-
   // 内容输出触发函数
   const handleContextChange = async (id, filename) => {
     const contextTemp = await gistGet({ token, id });
@@ -160,10 +131,10 @@ export default function App() {
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
       console.log(contextTemp.data.files[filenameTemp].content);
       if (filenameTemp === filename) {
-        setMarked("json");
+        // setMarked("json");
 
         contex1change(
-          marked.parse(contextTemp.data.files[filenameTemp].content)
+          markedConvert(contextTemp.data.files[filenameTemp].content, "json")
         );
         setnoContext(false);
         setlanguage("markdown");
@@ -174,14 +145,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    // 配置 highlight.js  忽略未经转义的html标签
-    hljs.configure({ ignoreUnescapedHTML: true });
-    // 获取到内容中所有的code标签
-    const codes = document.querySelectorAll("pre code");
-    // 让code进行高亮
-    codes.forEach((el) => {
-      hljs.highlightElement(el);
-    });
+    hljsEffect();
   }, []);
 
   async function handleClick() {
@@ -192,7 +156,7 @@ export default function App() {
   }
 
   function monacoTextChange(text) {
-    contex1change(marked.parse(text));
+    contex1change(markedConvert(text, "json"));
   }
 
   return (
