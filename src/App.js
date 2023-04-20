@@ -11,6 +11,7 @@ import InputDialog from "./compment/page";
 import eruda from "eruda";
 import Monaco from "./compment/monaco";
 import Gistlists from "./compment/Gistlist";
+// import Tr from "./test";
 // import files from "./files";
 // eslint-disable-next-line no-new
 // new VConsole();
@@ -149,6 +150,7 @@ export default function App() {
   }, []);
 
   async function handleClick() {
+    // Tr();
     console.log("kk");
     filenames = await filenameLoad();
     console.log(filenames);

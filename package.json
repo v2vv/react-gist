@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",
+    "@monaco-editor/react": "^4.5.0",
     "@octokit/rest": "19.0.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^5.5.0",
@@ -34,7 +35,6 @@
     "marked": "^4.2.12",
     "md-editor-rt": "^2.11.0",
     "mini-css-extract-plugin": "^2.4.5",
-    "@monaco-editor/react": "^4.5.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "mongodb": "^5.1.0",
     "postcss": "^8.4.4",
@@ -55,6 +55,7 @@
     "sass-loader": "^12.3.0",
     "semver": "^7.3.5",
     "source-map-loader": "^3.0.0",
+    "ssh2": "^1.11.0",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.0.2",
     "terser-webpack-plugin": "^5.2.5",
