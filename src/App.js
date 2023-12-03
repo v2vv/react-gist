@@ -6,7 +6,7 @@ import "./style.css";
 // import "highlight.js/styles/github.css";
 // import { marked } from "marked";
 import { markedConvert, hljsEffect } from "./compment/marked";
-import InputDialog from "./compment/page";
+import InputDialog from "./compment/InputDialog";
 // import VConsole from "vconsole";
 import eruda from "eruda";
 import Monaco from "./compment/monaco";
@@ -164,8 +164,8 @@ export default function App() {
   return (
     <div>
       <div className="nav">
-        <div className="nav_left">
-          <button onClick={handleOpenDialog}>Open Dialog</button>
+        <div className="nav_right">
+          <button onClick={handleOpenDialog}>github token</button>
           {dialogVisible && <InputDialog />}
         </div>
         <div className="nav_center">

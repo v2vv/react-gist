@@ -40,7 +40,7 @@ h1 {
   padding: 0;
   border: 0;
   width: 100%;
-  background-color: azure;
+  background-color: lightgoldenrodyellow;
 }
 
 pre {
@@ -54,6 +54,11 @@ pre {
 .nav_left {
   position: absolute;
   width: 20%;
+}
+
+.nav_right {
+  position: absolute;
+  right: 5px;
 }
 
 .nav_center {
