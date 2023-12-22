@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { gistGet, gistList } from "./compment/gists";
+import { gistGet,gistUpdate, gistList } from "./compment/gists";
 import React, { useEffect, useState } from "react";
 import "./style.css";
 // import hljs from "highlight.js";
@@ -25,6 +25,7 @@ const sting1 = `
 echo hello
 `;
 
+
 export default function App() {
   // refrash state
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -35,6 +36,7 @@ export default function App() {
   const [nocontext, setnoContext] = useState(true);
   const [language, setlanguage] = useState("markdown");
   const [filenameMonaco, setfileNamemonavo] = useState("welcome");
+  const [currGist, setCurrGist] = useState({ id: "", disc: "", filename: "", context: "" });
 
   const [textMd, textChange] = useState("hello");
 
@@ -78,7 +80,7 @@ export default function App() {
       </>
     );
     // html3change(fileList(filenames));
-    console.log(temp);
+    // console.log(temp);
     html3change(temp);
 
     showFirstGist(filenames);
@@ -125,10 +127,13 @@ export default function App() {
   //  contex1change(marked.parse(event.target.value));
   // }
 
+
   // 内容输出触发函数
   const handleContextChange = async (id, filename) => {
     const contextTemp = await gistGet({ token, id });
-    console.log(contextTemp.data);
+    currGist.id = id;
+    currGist.filename = filename;
+    setCurrGist(currGist);
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
       console.log(contextTemp.data.files[filenameTemp].content);
       if (filenameTemp === filename) {
@@ -157,20 +162,19 @@ export default function App() {
     filenameShow(filenames);
   }
 
-  let curr_context = "";
 
-  async function monacoTextSave() {
+
+  function monacoTextSave() {
     // Tr();
-    console.log(curr_context);
-
+    // console.log(curr_context);
+    console.log("curr_id,curr_filename");
+    console.log(currGist);
+    gistUpdate({token,id:currGist.id,disc:"ffff",filename:currGist.filename,context:currGist.context});
   }
-
-
-
 
   function monacoTextChange(text) {
     contex1change(markedConvert(text, "json"));
-    curr_context = text;
+    currGist.context = text;
   }
 
   return (

@@ -12,6 +12,9 @@ const gistUpdate = async ({ token, id, dsci, filename, context }) => {
         content: context,
       },
     },
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
   });
 };
 
