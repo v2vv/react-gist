@@ -8,7 +8,7 @@ import "./style.css";
 import { markedConvert, hljsEffect } from "./compment/marked";
 import InputDialog from "./compment/InputDialog";
 // import VConsole from "vconsole";
-import eruda from "eruda";
+// import eruda from "eruda";
 import Monaco from "./compment/monaco";
 import Gistlists from "./compment/Gistlist";
 // import Tr from "./test";
@@ -16,7 +16,7 @@ import Gistlists from "./compment/Gistlist";
 // eslint-disable-next-line no-new
 // new VConsole();
 
-eruda.init();
+// eruda.init();
 
 if (!localStorage.getItem("github_token")) {
   localStorage.setItem("github_token", "vaule");
@@ -157,8 +157,20 @@ export default function App() {
     filenameShow(filenames);
   }
 
+  let curr_context = "";
+
+  async function monacoTextSave() {
+    // Tr();
+    console.log(curr_context);
+
+  }
+
+
+
+
   function monacoTextChange(text) {
     contex1change(markedConvert(text, "json"));
+    curr_context = text;
   }
 
   return (
@@ -172,7 +184,8 @@ export default function App() {
           <h1>Github gist</h1>
         </div>
       </div>
-      <button onClick={handleClick}>You pressed me times</button>
+      <button onClick={handleClick}>Show GitHub gist list</button>
+      <button onClick={monacoTextSave}>SAVE</button>
       <p>Start editing to see some magic happen :)</p>
       <button onClick={hande_hiddle_click}>hide json</button>
       <div className="context_flex">
