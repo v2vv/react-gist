@@ -17,9 +17,9 @@ function Monaco({ nocontext, context, filename, language, onValidate }) {
     <>
       <Editor
         height="90vh"
-        defaultLanguage={nocontext ? "no" : language}
+        language={nocontext ? "no" : language}
         path={nocontext ? "no" : filename}
-        defaultValue={nocontext ? " " : context}
+        value={nocontext ? " " : context}
         onMount={handleEditorDidMount}
         onChange={handleOnValidate}
       />

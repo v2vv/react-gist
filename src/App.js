@@ -33,12 +33,8 @@ export default function App() {
   const [html3, html3change] = useState("qqq");
   const [context1, contex1change] = useState("eee");
   const [hidden_json, hande_hiddle] = useState(false);
-  const [nocontext, setnoContext] = useState(true);
-  const [language, setlanguage] = useState("markdown");
-  const [filenameMonaco, setfileNamemonavo] = useState("welcome");
   const [currGist, setCurrGist] = useState({ id: "", disc: "", filename: "", context: "" });
-
-  const [textMd, textChange] = useState("hello");
+  const [monacoCreat, setMonacoCreat] = useState({ nocontext: true, language: "markdown", filename: "", context: "HELLO" });
 
   // github token
   const token = localStorage.getItem("github_token");
@@ -134,24 +130,29 @@ export default function App() {
     currGist.id = id;
     currGist.filename = filename;
     setCurrGist(currGist);
+    console.log(contextTemp);
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
-      console.log(contextTemp.data.files[filenameTemp].content);
+
       if (filenameTemp === filename) {
         // setMarked("json");
 
         contex1change(
           markedConvert(contextTemp.data.files[filenameTemp].content, "json")
         );
-        setnoContext(false);
-        setlanguage("markdown");
-        setfileNamemonavo(filenameTemp);
-        textChange(contextTemp.data.files[filenameTemp].content);
+
+        setMonacoCreat({
+          nocontext:false,
+          language:contextTemp.data.files[filenameTemp].language.toLowerCase(),
+          filename:filenameTemp,
+          context:contextTemp.data.files[filenameTemp].content
+        });
       }
     });
   };
 
   useEffect(() => {
     hljsEffect();
+    setMonacoCreat({...monacoCreat});
   }, []);
 
   async function handleClick() {
@@ -175,6 +176,7 @@ export default function App() {
   function monacoTextChange(text) {
     contex1change(markedConvert(text, "json"));
     currGist.context = text;
+    console.log(monacoCreat);
   }
 
   return (
@@ -204,10 +206,10 @@ export default function App() {
         <div id="flex_middle">{html3}</div>
         <div id="flex_edit">
           <Monaco
-            nocontext={nocontext}
-            context={textMd}
-            filename={filenameMonaco}
-            language={language}
+            nocontext={monacoCreat.nocontext}
+            context={monacoCreat.context}
+            filename={monacoCreat.filename}
+            language={monacoCreat.language}
             onValidate={monacoTextChange}
           ></Monaco>
         </div>
