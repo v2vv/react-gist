@@ -33,6 +33,8 @@ export default function App() {
   const [html3, html3change] = useState("qqq");
   const [context1, contex1change] = useState("eee");
   const [hidden_json, hande_hiddle] = useState(false);
+
+  // 当前编辑的gist
   const [currGist, setCurrGist] = useState({ id: "", disc: "", filename: "", context: "" });
   const [monacoCreat, setMonacoCreat] = useState({ nocontext: true, language: "markdown", filename: "", context: "HELLO" });
 
@@ -127,10 +129,9 @@ export default function App() {
   // 内容输出触发函数
   const handleContextChange = async (id, filename) => {
     const contextTemp = await gistGet({ token, id });
-    currGist.id = id;
-    currGist.filename = filename;
-    setCurrGist(currGist);
+
     console.log(contextTemp);
+    // console.log(currGist);
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
 
       if (filenameTemp === filename) {
@@ -140,9 +141,16 @@ export default function App() {
           markedConvert(contextTemp.data.files[filenameTemp].content, "json")
         );
 
+        setCurrGist({...currGist,id:String(id),filename:String(filename),disc:contextTemp.data.description});
+        console.log(setCurrGist);
+        // currGist.id = id;
+        // currGist.filename = filename;
+        // currGist.disc = contextTemp.data.description
+        // setCurrGist({...currGist});
+
         setMonacoCreat({
           nocontext:false,
-          language:contextTemp.data.files[filenameTemp].language.toLowerCase(),
+          language:contextTemp.data.files[filenameTemp].language==null?"":contextTemp.data.files[filenameTemp].language.toLowerCase(),
           filename:filenameTemp,
           context:contextTemp.data.files[filenameTemp].content
         });
@@ -152,7 +160,6 @@ export default function App() {
 
   useEffect(() => {
     hljsEffect();
-    setMonacoCreat({...monacoCreat});
   }, []);
 
   async function handleClick() {
@@ -169,13 +176,13 @@ export default function App() {
     // Tr();
     // console.log(curr_context);
     console.log("curr_id,curr_filename");
-    console.log(currGist);
+    // console.log(currGist);
     gistUpdate({token,id:currGist.id,disc:"ffff",filename:currGist.filename,context:currGist.context});
   }
 
   function monacoTextChange(text) {
     contex1change(markedConvert(text, "json"));
-    currGist.context = text;
+    setCurrGist({...currGist,context:text});
     console.log(monacoCreat);
   }
 
