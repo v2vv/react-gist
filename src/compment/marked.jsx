@@ -14,7 +14,7 @@ function setMarked(langName) {
 
 function markedConvert(markdown, hljsLang) {
   setMarked(hljsLang);
-  marked.parse(markdown);
+  return marked.parse(markdown);
 }
 
 function hljsEffect() {
