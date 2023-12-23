@@ -49,6 +49,7 @@ export default function App() {
   // }
 
   function handleGistContexchange(content) {
+    // console.log(content);
     contex1change(markedConvert(content, "json"));
   }
 
@@ -60,7 +61,7 @@ export default function App() {
     );
     // 设置 hightlightjs bash
     const html = html1 + bashShow();
-    console.log(html);
+    console.log(html1);
     ChangeVaule(html);
   }
 
@@ -92,6 +93,10 @@ export default function App() {
     }
   }
 
+  function handleGistEditorDidMount() {
+    console.log("gist did mount ok");
+  }
+
   return (
     <div>
       <div className="nav">
@@ -120,6 +125,7 @@ export default function App() {
         <div id="flex_edit">
           <MonacoEdit
             onGistAppMonacoTextChange={handleGistContexchange}
+            onGistEditorDidMount={handleGistEditorDidMount}
             ref={Gistref}
           />
         </div>
