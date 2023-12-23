@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import { gistGet,gistUpdate, gistList } from "./compment/gists";
-import React, { useEffect, useState } from "react";
+import { MonacoEdit } from "./compment/gists";
+import React, { useEffect, useState, useRef } from "react";
 import "./style.css";
 // import hljs from "highlight.js";
 // import "highlight.js/styles/github.css";
@@ -9,8 +9,7 @@ import { markedConvert, hljsEffect } from "./compment/marked";
 import InputDialog from "./compment/InputDialog";
 // import VConsole from "vconsole";
 // import eruda from "eruda";
-import Monaco from "./compment/monaco";
-import Gistlists from "./compment/Gistlist";
+
 // import Tr from "./test";
 // import files from "./files";
 // eslint-disable-next-line no-new
@@ -21,76 +20,36 @@ import Gistlists from "./compment/Gistlist";
 if (!localStorage.getItem("github_token")) {
   localStorage.setItem("github_token", "vaule");
 }
+
 const sting1 = `
 echo hello
 `;
-
 
 export default function App() {
   // refrash state
   const [dialogVisible, setDialogVisible] = useState(false);
   const [vaule, ChangeVaule] = useState("<p>jj</p");
-  const [html3, html3change] = useState("qqq");
   const [context1, contex1change] = useState("eee");
   const [hidden_json, hande_hiddle] = useState(false);
-
-  // 当前编辑的gist
-  const [currGist, setCurrGist] = useState({ id: "", disc: "", filename: "", context: "" });
-  const [monacoCreat, setMonacoCreat] = useState({ nocontext: true, language: "markdown", filename: "", context: "HELLO" });
-
-  // github token
-  const token = localStorage.getItem("github_token");
-  const redataFunc = async () => {
-    return await gistList({ token });
+  const [html3, html3change] = useState("qqq");
+  const Gistref = useRef();
+  // 输入 github token
+  const handleOpenDialog = () => {
+    setDialogVisible(!dialogVisible);
   };
 
-  let filenames = {};
-
-  // 获取 gists 列表
-  const filenameLoad = async () => {
-    const redata = await redataFunc();
-    console.log(redata);
-    return filenameForeach(redata);
+  // 隐藏 gists Message
+  const hande_hiddle_click = () => {
+    hande_hiddle(!hidden_json);
   };
 
-  // 遍历 gists 并生成 filename:id key:vaule
-  const filenameForeach = (redata) => {
-    // eslint-disable-next-line array-callback-return
-    redata.data.forEach((dat) => {
-      Object.keys(dat.files).forEach((filename) => {
-        filenames[filename] = {};
-        filenames[filename].id = dat.id;
-      });
-    });
-    return filenames;
-  };
+  // function handleMdView(event) {
+  //   textChange(event.target.value);
+  //  contex1change(marked.parse(event.target.value));
+  // }
 
-  // 显示 gists 文件名
-  const filenameShow = (filenames) => {
-    filenameMessage(filenames);
-    // 设置 hightlightjs json
-    const temp = (
-      <>
-        <Gistlists
-          names={filenames}
-          handleContextChange={handleContextChange}
-        />
-      </>
-    );
-    // html3change(fileList(filenames));
-    // console.log(temp);
-    html3change(temp);
-
-    showFirstGist(filenames);
-  };
-
-  // 显示第一条 gists
-  function showFirstGist(filenames) {
-    // console.log(Object.keys(filenames)[0]);
-    handleContextChange(
-      filenames[Object.keys(filenames)[0]].id,
-      Object.keys(filenames)[0]
-    );
+  function handleGistContexchange(content) {
+    contex1change(markedConvert(content, "json"));
   }
 
   function filenameMessage(filenames) {
@@ -110,80 +69,27 @@ export default function App() {
     return markedConvert("\n```bash\n" + sting1 + "\n```", "json");
   }
 
-  // 输入 github token
-  const handleOpenDialog = () => {
-    setDialogVisible(!dialogVisible);
-  };
-
-  // 隐藏 gists Message
-  const hande_hiddle_click = () => {
-    hande_hiddle(!hidden_json);
-  };
-
-  // function handleMdView(event) {
-  //   textChange(event.target.value);
-  //  contex1change(marked.parse(event.target.value));
-  // }
-
-
-  // 内容输出触发函数
-  const handleContextChange = async (id, filename) => {
-    const contextTemp = await gistGet({ token, id });
-
-    console.log(contextTemp);
-    // console.log(currGist);
-    Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
-
-      if (filenameTemp === filename) {
-        // setMarked("json");
-
-        contex1change(
-          markedConvert(contextTemp.data.files[filenameTemp].content, "json")
-        );
-
-        setCurrGist({...currGist,id:String(id),filename:String(filename),disc:contextTemp.data.description});
-        console.log(setCurrGist);
-        // currGist.id = id;
-        // currGist.filename = filename;
-        // currGist.disc = contextTemp.data.description
-        // setCurrGist({...currGist});
-
-        setMonacoCreat({
-          nocontext:false,
-          language:contextTemp.data.files[filenameTemp].language==null?"":contextTemp.data.files[filenameTemp].language.toLowerCase(),
-          filename:filenameTemp,
-          context:contextTemp.data.files[filenameTemp].content
-        });
-      }
-    });
-  };
-
   useEffect(() => {
     hljsEffect();
   }, []);
 
-  async function handleClick() {
-    // Tr();
-    console.log("kk");
-    filenames = await filenameLoad();
+  async function handleShowGistnameClick() {
+    const child = Gistref.current;
+    console.log(child);
+    const filenames = await child.filenameLoad();
     console.log(filenames);
-    filenameShow(filenames);
+    filenameMessage(filenames);
+    html3change(child.filenameShow());
   }
-
-
 
   function monacoTextSave() {
-    // Tr();
-    // console.log(curr_context);
-    console.log("curr_id,curr_filename");
-    // console.log(currGist);
-    gistUpdate({token,id:currGist.id,disc:"ffff",filename:currGist.filename,context:currGist.context});
-  }
-
-  function monacoTextChange(text) {
-    contex1change(markedConvert(text, "json"));
-    setCurrGist({...currGist,context:text});
-    console.log(monacoCreat);
+    const child = Gistref.current;
+    if (child) {
+      child.gistMonacoTextSave();
+    } else {
+      console.error("MonacoEdit component is not available yet.");
+      // 可以考虑提示用户或进行其他处理
+    }
   }
 
   return (
@@ -197,7 +103,7 @@ export default function App() {
           <h1>Github gist</h1>
         </div>
       </div>
-      <button onClick={handleClick}>Show GitHub gist list</button>
+      <button onClick={handleShowGistnameClick}>Show GitHub gist list</button>
       <button onClick={monacoTextSave}>SAVE</button>
       <p>Start editing to see some magic happen :)</p>
       <button onClick={hande_hiddle_click}>hide json</button>
@@ -212,13 +118,10 @@ export default function App() {
         )}
         <div id="flex_middle">{html3}</div>
         <div id="flex_edit">
-          <Monaco
-            nocontext={monacoCreat.nocontext}
-            context={monacoCreat.context}
-            filename={monacoCreat.filename}
-            language={monacoCreat.language}
-            onValidate={monacoTextChange}
-          ></Monaco>
+          <MonacoEdit
+            onGistAppMonacoTextChange={handleGistContexchange}
+            ref={Gistref}
+          />
         </div>
         <div
           id="flex_right"
