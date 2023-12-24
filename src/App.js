@@ -97,6 +97,10 @@ export default function App() {
     console.log("gist did mount ok");
   }
 
+  function handleGistEditorContextChange(context) {
+    contex1change(markedConvert(context, "json"));
+  }
+
   return (
     <div>
       <div className="nav">
@@ -124,8 +128,9 @@ export default function App() {
         <div id="flex_middle">{html3}</div>
         <div id="flex_edit">
           <MonacoEdit
-            onGistAppMonacoTextChange={handleGistContexchange}
+            onGistEditorTextChange={handleGistContexchange}
             onGistEditorDidMount={handleGistEditorDidMount}
+            onGistEditorContextChange={handleGistEditorContextChange}
             ref={Gistref}
           />
         </div>
