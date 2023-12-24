@@ -27,7 +27,7 @@ const gistUpdate = async ({ token, id, dsci, filename, context }) => {
 };
 
 const MonacoEdit = forwardRef(function MonacoEdit(
-  { onGistAppMonacoTextChange, onGistEditorDidMount },
+  { onGistTextChange, onGistEditorDidMount },
   ref
 ) {
   useImperativeHandle(ref, () => ({
@@ -90,14 +90,13 @@ const MonacoEdit = forwardRef(function MonacoEdit(
   };
 
   function handleMonacoTextChange(text) {
-    onGistAppMonacoTextChange(text);
+    onGistTextChange(text);
     setCurrGist({ ...currGist, context: text });
   }
 
   // 内容输出触发函数
   const handleContextChange = async (id, filename) => {
     const contextTemp = await gistGet({ token, id });
-
     console.log(contextTemp);
     // console.log(currGist);
     Object.keys(contextTemp.data.files).forEach((filenameTemp) => {
@@ -190,7 +189,7 @@ const MonacoEdit = forwardRef(function MonacoEdit(
 });
 
 MonacoEdit.propTypes = {
-  onGistAppMonacoTextChange: Proptypes.func.isRequired,
+  onGistTextChange: Proptypes.func.isRequired,
   onGistEditorDidMount: Proptypes.func.isRequired,
 };
 
